@@ -69,9 +69,10 @@ void streamRawValues(IMU& imu)
     imu.enable();
     while(1)
     {
+        int t = millis();
         imu.read();
-        printf("%7d %7d %7d  %7d %7d %7d  %7d %7d %7d\n",
-               imu.raw_m[0], imu.raw_m[1], imu.raw_m[2],
+        printf("%10i %7d %7d %7d  %7d %7d %7d  %7d %7d %7d\n",
+               t, imu.raw_m[0], imu.raw_m[1], imu.raw_m[2],
                imu.raw_a[0], imu.raw_a[1], imu.raw_a[2],
                imu.raw_g[0], imu.raw_g[1], imu.raw_g[2]
         );
@@ -177,9 +178,12 @@ void ahrs(IMU & imu, fuse_function * fuse, rotation_output_function * output)
         vector magnetic_field = imu.readMag();
 
         fuse(rotation, dt, angular_velocity, acceleration, magnetic_field);
-
+        
+        std::cout << start << " ";
         output(rotation);
-        std::cout << "  " << acceleration << "  " << magnetic_field << std::endl << std::flush;
+        std::cout << " " << acceleration << " ";
+        std::cout << angular_velocity << " ";
+        std::cout << magnetic_field << std::endl << std::flush;
 
         // Ensure that each iteration of the loop takes at least 20 ms.
         while(millis() - start < 20)
